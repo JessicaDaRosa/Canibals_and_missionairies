@@ -8,7 +8,7 @@ class State :
         self.mL = cRight
         self.boat = b
         self.cost = 0
-    #true if numbers are respected
+    #the state in question will become a copy of the one guiven as an entry
     def copy(self, thing):
         self.cL=thing.cL
         self.cR=thing.cR
@@ -16,17 +16,20 @@ class State :
         self.mR=thing.mR
         self.boat=thing.boat
         self.cost=thing.cost          
+    # simple test to see if the number of cannibals exceeds the number of missionairies
+    # True if the state is complycent whith the norms (number of canibals <= numer of missionairies)
     def test (self): 
-        if(self.cR <= self.mR):
-            if(self.cL <= self.mL):
+        if self.cR <= self.mR and self.cL <= self.mL:
                 return True
         else:
             return False
+    # how to print an element
     def __str__(self):
         if (self.boat==True):
             return ("Boat on the Left.\nLeft [C={};M={}] \nRight[C={};M={}]\nPassge number: {}\n".format(self.cL,self.mL,self.cR,self.mR,self.cost))
         else:
             return ("Boat on the Right.\nLeft [C={};M={}] \nRight[C={};M={}]\nPassge number: {}\n".format(self.cL,self.mL,self.cR,self.mR,self.cost))
+    # comparison of two elements (==) 
     def __eq__(self, other):
         if (self.cR == other.cR):
             if (self.cL == other.cL):
@@ -37,52 +40,58 @@ class State :
         else:
             return False
     #move n Canibals
+    # returns a new instance of State where cannibals where moved
+    # return None if the move isn't possible
     def MnC(self,number):
-        temp = State (0,0,0,0,True)
+        temp = State (0,0,0,0,True) # memory allocation for our new variable
         temp.copy(self)
         if(temp.boat == True):#Left
-            if (temp.cL >0):
+            if (temp.cL > 0): # to enshure no negative number of canibals
                 temp.boat = False
                 temp.cost = temp.cost+1 
-                if(temp.cL >= number):
+                if(temp.cL >= number): # sone canibals stay a shore
                     temp.cL = temp.cL - number
                     temp.cR = temp.cR + number
-                elif temp.cL < number :
+                elif temp.cL < number : # no cannibals left on this side
                     temp.cR = temp.cR + temp.cL
                     temp.cR = 0
         elif (temp.boat == False):#Right
             if (temp.cR > 0):
                 temp.boat = True
                 temp.cost = temp.cost + 1
-                if(temp.cR >= number):
+                if(temp.cR >= number): # there will be canibals left on the right
                     temp.cR = temp.cR - number
                     temp.cL = temp.cL + number
-                if temp.cR < number :
+                if temp.cR < number : #no canibals left on the right
                     temp.cL = temp.cL + temp.cR
                     temp.cR = 0
-        if temp == self :
+        # if the criterian aren't met and there is no passage tem will have the value 
+        # of the supposed parent and in that case we will return an empty state
+        if temp == self : 
             return None
         else:
             return temp
     #move n Missionairies
+    # returns a new instance of State where Missionairies where moved
+    # return None if the move isn't possible
     def MnM(self, number):
         temp = State(self.cR,self.mR,self.cL,self.mL,self.boat)
         if(temp.boat == True):#Left
-            if temp.mL > 0 :
-                temp.boat=False
-                if temp.mL >= number:
+            if temp.mL > 0 : # are there missionairies on the shore?
+                temp.boat=False # if yes the boat can move
+                if temp.mL >= number: # are there more missionairies than places on the boat?
                     temp.mL = temp.mL - number
                     temp.mR = temp.mR + number
-                elif temp . mL < number :#to avoid negatif numbers
+                elif temp . mL < number :# to avoid negatif numbers if we have less missionairis than places (1 missionarie)
                     temp.mR = temp.mR + temp.mL
                     temp.mL = 0                 
         elif temp.boat == False:#Right
-            if temp.mR > 0 :
-                temp.boat = True
-                if temp.mR >= number :
+            if temp.mR > 0 : # are there missionairies on the shore?
+                temp.boat = True # if yes the boat can move
+                if temp.mR >= number : # are there more missionairies than places on the boat?
                     temp.mR = temp.mR - number
                     temp.mL = temp.mL + number
-                elif temp.mR < number:#to avoid negatif numbers
+                elif temp.mR < number:# to avoid negatif numbers if we have less missionairis than places (1 missionarie)
                     temp.mL = temp.mL + temp.mR
                     temp.mR = 0
         if temp == self:
@@ -146,6 +155,7 @@ class State :
             return None
         else:
             return temp
+    #returns a state where every position is inversed
     def reverse (self):
-        if self.boat == False : return temp = State (self.cL,self.mL,self.cR,self.mL,True)
-        if self.boat == True : return temp = State (self.cL,self.mL,self.cR,self.mL,False)
+        if self.boat == False : return State (self.cL,self.mL,self.cR,self.mL,True)
+        if self.boat == True : return State (self.cL,self.mL,self.cR,self.mL,False)
