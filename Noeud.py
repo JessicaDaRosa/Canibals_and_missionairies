@@ -8,7 +8,10 @@ class Object :
     # the inportant thing is th son (State) 
     # so that is what is printed for every object
     def __str__(self):
-        print (self.son)
+        if (self.son.boat==True):
+            return ("Boat on the Left.\nLeft [C={};M={}] \nRight[C={};M={}]\nPassage number: {}".format(self.son.cL,self.son.mL,self.son.cR,self.son.mR,self.son.cost))
+        else:
+            return ("Boat on the Right.\nLeft [C={};M={}] \nRight[C={};M={}]\nPassage number: {}".format(self.son.cL,self.son.mL,self.son.cR,self.son.mR,self.son.cost))
     # returns the state from witch this one was generated
     def getFather(self):
         return self.father
@@ -24,18 +27,29 @@ class Object :
         results = [] 
         #boat full of canibals
         temp = father.MnC(boatSize)
-        if temp.test() :
+        if temp != None and temp.test() :
             results.append( Object(temp,self) )
         #boat full of Missionairies
+        print("___Father___")
+        print(father)
         temp = father.MnM(boatSize)
-        if temp.test() : 
+        print("-->> MnM <<--")
+        print(type(temp))
+        print(temp)
+        if temp != None and temp.test() :
             results.append( Object(temp,self) )
         # the boat must be even numbered for this passage to work properlly
         # half and half 
+        print("___Father___")
+        print(father)
         temp = father.MCM(int(boatSize/2))
-        if temp.test() :
+        print("-->> McM <<--")
+        print(type(temp))
+        print(temp)
+        if temp != None and temp.test():
             results.append( Object (temp,self))
         return results
     def __eq__(self, other):
-        return self.son == other.son
-
+        if type(self)== type(other):
+            return self.son == other.son
+        else:return False
