@@ -25,27 +25,20 @@ class Object :
         father = self.getSon() # the state that is being expansed 
         temp = State(0,0,0,0,True) # memory allocation 
         results = [] 
-        #boat full of canibals
-        temp = father.MnC(boatSize)
-        if temp != None and temp.test() :
-            results.append( Object(temp,self) )
-        #boat full of Missionairies
-        print("___Father___")
-        print(father)
-        temp = father.MnM(boatSize)
-        print("-->> MnM <<--")
-        print(type(temp))
-        print(temp)
-        if temp != None and temp.test() :
-            results.append( Object(temp,self) )
+        ct = 1
+        for i in range (1,boatSize+1) :
+            #canibals
+            temp = father.MnC(ct)
+            if temp != None and temp.test() :
+                results.append( Object(temp,self) )
+            #boat full of Missionairies
+            temp = father.MnM(i)
+            if temp != None and temp.test() :
+                results.append( Object(temp,self) )
+            ct = ct+1
         # the boat must be even numbered for this passage to work properlly
         # half and half 
-        print("___Father___")
-        print(father)
         temp = father.MCM(int(boatSize/2))
-        print("-->> McM <<--")
-        print(type(temp))
-        print(temp)
         if temp != None and temp.test():
             results.append( Object (temp,self))
         return results
